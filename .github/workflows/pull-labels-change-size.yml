@@ -1,5 +1,5 @@
 ---
-name: "Labeler"
+name: "Labels"
 
 on: # yamllint disable-line rule:truthy
   pull_request:
@@ -8,7 +8,7 @@ on: # yamllint disable-line rule:truthy
 
 jobs:
   labeler:
-    name: Labeler
+    name: Change Set Size
     runs-on: ubuntu-latest
     steps:
 

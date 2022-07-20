@@ -8,7 +8,7 @@ on: # yamllint disable-line rule:truthy
 
 jobs:
   link-checker:
-    name: Link Checker
+    name: Lychee
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

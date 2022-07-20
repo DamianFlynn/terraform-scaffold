@@ -19,7 +19,7 @@ concurrency:
 jobs:
 
   megalinter:
-    name: Lint Change Set
+    name: MegaLinter
     runs-on: ubuntu-latest
     steps:
 
