@@ -2,14 +2,13 @@
 name: "Lint: Commit Messages"
 
 on:
- - pull_request
+  - pull_request
 
 jobs:
   commitlint:
     name: Commit Comments
     runs-on: ubuntu-latest
     steps:
-
       # Checkout the Code
       - uses: actions/checkout@v3
         name: Checkout the Repo
