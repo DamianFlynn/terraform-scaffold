@@ -1,7 +1,6 @@
 # Contribution Guidelines
 
-<!-- NOTE: We use absolute linking here instead of relative linking, because the terraform registry does not support
-           relative linking correctly.
+<!-- NOTE: We use absolute linking here instead of relative linking, because the terraform registry does not support relative linking correctly.
 -->
 
 Contributions to this Module are very welcome!
@@ -62,22 +61,23 @@ Deleting certain types of resources (e.g. virtual servers, load balancers) can c
 
 You must run `terraform fmt` on the code before committing. You can configure your computer to do this automatically using pre-commit hooks managed using [pre-commit](http://pre-commit.com/):
 
-> MacOS / Linux - Brew
-> 1. [Install pre-commit](http://pre-commit.com/#install). E.g.: `brew install pre-commit`.
-> 1. Install the hooks: `pre-commit install`.
+### MacOS / Linux - Brew
 
-> Windows - Python PIP
-> 1. `pip install pre-commit`
-> 1. Install the hooks: `pre-commit install --install-hooks -t commit-msg`
+1. [Install pre-commit](http://pre-commit.com/#install). E.g.: `brew install pre-commit`.
+1. Install the hooks: `pre-commit install`.
 
-That's it! Now just write your code, and every time you commit, `terraform fmt` will be run on the files you're committing.
+### Windows - Python PIP
 
-> If you are curious how this happens, in the root of the reposiotry we have a file called '.pre-commit-config.yaml' which contains a link to the repository hosting the checks, along with the release version to use, and the tests to execute.
+1. `pip install pre-commit`
+1. Install the hooks: `pre-commit install --install-hooks -t commit-msg`
+
+That's it! Now just write your code, and every time you commit, `terraform fmt` and a other [pre-commit checks](./docs/markdown/pre-commit.md) will be run on the files you're committing.
+
+> If you are curious how this happens, in the root of the reposiotry we have a file called ```.pre-commit-config.yaml``` which contains a link to the repository hosting the checks, along with the release version to use, and the tests to execute.
 
 ### Commit Hygiene
 
-This repository enforces conventional commit messages.
-https://www.conventionalcommits.org/
+This repository enforces [conventional commit messages.](https://www.conventionalcommits.org/)
 
 Consider carefully, commits will be rejected, and will require the committer to edit the commits and/or their messages in the following conditions:
 
@@ -91,33 +91,32 @@ Consider carefully, commits will be rejected, and will require the committer to 
 
 Structure your commit message like this:
 
-```
+```text
 One line summary (less than 50 characters)
 Longer description (wrap at 72 characters)
 ```
 
-* Summary
-    * Less than 50 characters
-    * What was changed
-    * Imperative present tense (fix, add, change)
-        * Fix bug 123
-        * Add 'foobar' command
-        * Change default timeout to 123
-    * No period
+- Summary
+  - Less than 50 characters
+  - What was changed
+  - Imperative present tense (fix, add, change)
+    - Fix bug 123
+    - Add 'foobar' command
+    - Change default timeout to 123
+  - No period
 
-* Description
-    * Wrap at 72 characters
-    * Why, explain intention and implementation approach
-    * Present tense
+- Description
+  - Wrap at 72 characters
+  - Why, explain intention and implementation approach
+  - Present tense
 
-* Atomicity
-    * Break up logical changes
-    * Make whitespace changes separately
+- Atomicity
+  - Break up logical changes
+  - Make whitespace changes separately
 
 ## Create a pull request
 
-[Create a pull request](https://help.github.com/articles/creating-a-pull-request/) with your changes. Please make sure
-to include the following:
+[Create a pull request](https://help.github.com/articles/creating-a-pull-request/) with your changes. Please make sure to include the following:
 
 1. A description of the change, including a link to your GitHub issue.
 1. The output of your automated test run, preferably in a [GitHub Gist](https://gist.github.com/). We cannot run automated tests for pull requests automatically due to [security concerns](https://circleci.com/docs/fork-pr-builds/#security-implications), so we need you to manually provide this test output so we can verify that everything is working.
@@ -125,4 +124,4 @@ to include the following:
 
 ## Merge and release
 
-The maintainers for this repo will review your code and provide feedback. If everything looks good, they will merge the code and release a new version, which you'll be able to find in the [releases page](https://github.com/damianflynn/acf-tf-module-virtualmachine/releases).
+The maintainers for this repo will review your code and provide feedback. If everything looks good, they will merge the code and release a new version, which you'll be able to find in the [releases page](https://github.com/damianflynn/terraform-scaffold/releases).
