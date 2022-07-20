@@ -10,6 +10,7 @@ inputs:
 runs:
   using: "composite"
   steps:
+
     # I'm getting the labels from the API and not the context("contains(github.event.pull_request.labels.*.name, 'Env Promote')") as the labels
     # are added in 2nd API call so they aren't included in the PR context
     - name: Check PR labels
@@ -33,15 +34,47 @@ runs:
           PRTYPE="#Warning /nNo release 'type' labels found(patch/minor/major/no-release)"
         fi
 
-    - name: Comment on Label issue to Github PR
-      if: steps.check_pr_label.outputs.release-type == ''
-      uses: mshick/add-pr-comment@v1
+
+    # Has this workflow already commented on the PR?
+    - name: Find Intial Comment
+      uses: peter-evans/find-comment@v2
+      id: initial-comment
       with:
-        repo-token: ${{ inputs.token }}
-        repo-token-user-login: "github-actions[bot]"
-        message: |
-          ${{ env.PRTYPE }}
-          ## Release Type Label
+        token: ${{ secrets.GITHUB_TOKEN }}
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: "github-actions[bot]"
+        body-includes: Release Type Label
+
+
+    - name: Comment on PR Configuration Planning ${{ matrix.directory }}
+      if: steps.initial-comment.outputs.comment-id == ''
+      id: build-example-comment
+      uses: peter-evans/create-or-update-comment@v2
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          # Release Type Label
+
+          Checking Status...
+
+    # Initial Workflow Comment Reference for Updates
+    - name: Find Comment
+      uses: peter-evans/find-comment@v2
+      id: fc
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: "github-actions[bot]"
+        body-includes: Release Type Label
+
+
+    - name: Missing Label
+      if: steps.fc.outputs.comment-id != '' && steps.check_pr_label.outputs.release-type == ''
+      uses: peter-evans/create-or-update-comment@v1
+      with:
+        comment-id: ${{ steps.fc.outputs.comment-id }}
+        body: |
+          # Release Type Label
 
           Pull Requests are requied to be labeled using a **'type/'** label.
 
@@ -53,6 +86,21 @@ runs:
           ### Action:
 
           You **must** apply an _single_ appropiate *'type/'* label, to proceed with the PR
+
+        edit-mode: replace
+
+    - name: Labels are Ok
+      if: steps.fc.outputs.comment-id != '' && steps.check_pr_label.outputs.release-type != ''
+      uses: mshick/add-pr-comment@v1
+      with:
+        repo-token: ${{ inputs.token }}
+        repo-token-user-login: "github-actions[bot]"
+        message: |
+          ## Release Type Label
+
+          ${{ steps.check_pr_label.outputs.release-type }} Label applied
+
+        edit-mode: replace
 
     - name: Block Job due to Label issue
       if: steps.check_pr_label.outputs.release-type == ''
