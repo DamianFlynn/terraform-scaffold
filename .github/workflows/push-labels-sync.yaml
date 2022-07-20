@@ -1,4 +1,4 @@
-name: "Labeler: Resyncronise"
+name: "Label Definations"
 on: # yamllint disable-line rule:truthy
   workflow_dispatch:
   push:
@@ -9,7 +9,7 @@ on: # yamllint disable-line rule:truthy
 
 jobs:
   labels:
-    name: Sync Labels
+    name: Syncroinise
     runs-on: ubuntu-latest
     steps:
 

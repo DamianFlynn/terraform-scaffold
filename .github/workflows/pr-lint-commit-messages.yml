@@ -6,7 +6,7 @@ on:
 
 jobs:
   commitlint:
-    name: Lint Commit Comments
+    name: Commit Comments
     runs-on: ubuntu-latest
     steps:
 
