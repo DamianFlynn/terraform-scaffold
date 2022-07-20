@@ -8,7 +8,7 @@ on: # yamllint disable-line rule:truthy
 
 jobs:
   labeler:
-    name: Change Set Size
+    name: Pull Changeset Size
     runs-on: ubuntu-latest
     steps:
 
