@@ -11,16 +11,19 @@ jobs:
 
       # Checkout the Code
       - uses: actions/checkout@v3
+        name: Checkout the Repo
         with:
           fetch-depth: 0
 
       # Lint the Comments
       - uses: wagoid/commitlint-github-action@v5
+        name: Lint Commit Messages
         id: lint
         continue-on-error: true
 
       # Format the results of the linting for the PR
       - uses: actions/github-script@v6
+        name: Process Lint Results
         with:
           script: |
             if(`${{steps.lint.outcome}}` === "success") {
