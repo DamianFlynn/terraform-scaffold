@@ -17,5 +17,5 @@ jobs:
   call-bot:
     name: Dispatcher
     if: ${{ github.event.issue.pull_request && contains(github.event.comment.html_url, '/pull/')  }}
-    uses: damianflynn/gha-workflows/.github/workflows/_bot-activities.yml@main
+    uses: ./.github/workflows/_bot-activities.yml
     secrets: inherit
