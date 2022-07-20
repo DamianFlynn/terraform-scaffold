@@ -73,7 +73,3 @@ jobs:
 
           edit-mode: append
           reactions: rocket
-
-      ##
-      ## STAGE 1 - Terraform Init
-      ##

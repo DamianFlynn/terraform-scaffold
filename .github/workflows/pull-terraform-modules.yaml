@@ -1,6 +1,6 @@
 ---
 name: "🧬 Terraform Modules"
-concurrency:  # avoid concurrent runs  ¯\_(ツ)_/¯
+concurrency: # avoid concurrent runs  ¯\_(ツ)_/¯
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
@@ -15,7 +15,6 @@ on:
       - main
 
 jobs:
-
   detect:
     runs-on: ubuntu-latest
     name: "Context Checker"
@@ -29,7 +28,6 @@ jobs:
         ${{ github.event_name == 'pull_request_target'
          && github.event.action == 'closed'
          && github.event.pull_request.merged == true }}
-
 
     steps:
       - uses: actions-ecosystem/action-add-labels@v1
@@ -67,9 +65,7 @@ jobs:
         if: ${{ needs.detect.outputs.documenation != '{}' || needs.detect.outputs.definitions != '{}' ||  needs.detect.outputs.modules != '{}' || needs.detect.outputs.examples != '{}' }}
         uses: actions-ecosystem/action-remove-labels@v1
         with:
-          labels: 'do-not-merge'
-
-
+          labels: "do-not-merge"
 
   #
   # >> Module : Main : Examples : Docs
@@ -84,7 +80,6 @@ jobs:
       ( needs.detect.outputs.modules == '{}' || needs.detect.outputs.examples == '{}' || needs.detect.outputs.documenation == '{}' )
     uses: ./.github/workflows/_merge-pr-no-release.yml
     secrets: inherit
-
 
   # ## Docs
   # >> 0:0:0:1 = Documentation Update
@@ -126,20 +121,15 @@ jobs:
       examples: ${{ needs.detect.outputs.examples }}
     secrets: inherit
 
-
   # Build Documention once we know the examples are working
   call-document-examples:
     name: Document Examples
-    needs: [
-      detect,
-      call-build-examples
-    ]
+    needs: [detect, call-build-examples]
     if: ${{ always() && !cancelled() && needs.call-build-examples.result == 'success' }}
     uses: ./.github/workflows/_document-example.yml
     with:
       examples: ${{ needs.detect.outputs.examples }}
     secrets: inherit
-
 
   # ## Definition
   # >> 0:1:0:0 = Definition Main Update
@@ -163,7 +153,6 @@ jobs:
     with:
       definitions: ${{ needs.detect.outputs.definitions }}
     secrets: inherit
-
 
   # ## Module
   #
@@ -199,28 +188,23 @@ jobs:
       modules: ${{ needs.detect.outputs.modules }}
     secrets: inherit
 
-
-
-
   # Remove the 'do-not-merge' label after clear tests
   merge-unblocked:
     name: Allow Merge
-    needs: [
-      detect,
-      call-build-examples,
-      call-build-definition,
-      call-build-documenation
-    ]
+    needs:
+      [
+        detect,
+        call-build-examples,
+        call-build-definition,
+        call-build-documenation,
+      ]
     if: ${{ always() && !cancelled() && needs.call-build-examples.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
-
       - name: Remove do-not-merge label
         uses: actions-ecosystem/action-remove-labels@v1
         with:
-          labels: 'do-not-merge'
-
-
+          labels: "do-not-merge"
 
   # All Tests are Clear, we can proceed with merge
 
@@ -234,22 +218,19 @@ jobs:
       needs.detect.outputs.is-merge-event == 'true'  &&
       ( needs.detect.outputs.modules != '{}' || needs.detect.outputs.examples != '{}' || needs.detect.outputs.documenation != '{}' )
     uses: ./.github/workflows/_merge-pr-release.yml
-    secrets: inherit
+    secrets:
+      inherit
 
-
-
-
-
-      # >> 0:0:1:1 = Documentation Update, Definition Example Update
-      #              CI:
-      #                - build_documentation
-      #                - matrix: [examples -> reference 'latest' release]
-      #                  - verify_docs (changed definition)
-      #                  - terraform_plan (changed definition)
-      #                  - terraform_apply (changed definition)
-      #                  - terraform_destroy (changed definition)
-      #                  - terraform_document (changed definition)
-      #              CD:
-      #                - changelog: doc updates, examples
-      #                - release_documentation
-      #                - release_module
+  # >> 0:0:1:1 = Documentation Update, Definition Example Update
+  #              CI:
+  #                - build_documentation
+  #                - matrix: [examples -> reference 'latest' release]
+  #                  - verify_docs (changed definition)
+  #                  - terraform_plan (changed definition)
+  #                  - terraform_apply (changed definition)
+  #                  - terraform_destroy (changed definition)
+  #                  - terraform_document (changed definition)
+  #              CD:
+  #                - changelog: doc updates, examples
+  #                - release_documentation
+  #                - release_module

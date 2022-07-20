@@ -2,16 +2,14 @@
 name: "🧳 Release Label"
 description: "Check the Labels on the Release"
 inputs:
-   token:
+  token:
     required: true
     description: "GitHub Token to Authenticate using"
     # default: 'World'
 
-
 runs:
   using: "composite"
   steps:
-
     # I'm getting the labels from the API and not the context("contains(github.event.pull_request.labels.*.name, 'Env Promote')") as the labels
     # are added in 2nd API call so they aren't included in the PR context
     - name: Check PR labels
@@ -40,7 +38,7 @@ runs:
       uses: mshick/add-pr-comment@v1
       with:
         repo-token: ${{ inputs.token }}
-        repo-token-user-login: 'github-actions[bot]'
+        repo-token-user-login: "github-actions[bot]"
         message: |
           ${{ env.PRTYPE }}
           ## Release Type Label
