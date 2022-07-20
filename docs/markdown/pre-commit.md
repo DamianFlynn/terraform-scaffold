@@ -2,7 +2,6 @@
 
 ## Configuring your Development Station
 
-
 ### Install dependencies
 
 * [`pre-commit`](https://pre-commit.com/#install)
@@ -36,7 +35,6 @@ Otherwise, you can follow [this gist](https://gist.github.com/etiennejeanneaurev
 Ensure your PATH environment variable looks for `bash.exe` in `C:\Program Files\Git\bin` (the one present in `C:\Windows\System32\bash.exe` does not work with `pre-commit.exe`)
 
 For `checkov`, you may need to also set your `PYTHONPATH` environment variable with the path to your Python modules.  E.g. `C:\Users\USERNAME\AppData\Local\Programs\Python\Python39\Lib\site-packages`
-
 
 #### Ubuntu 18.04
 
@@ -98,7 +96,7 @@ pre-commit run -a
 
 Protect specific branches from direct checkins.
 
-- Using `args: [--branch, staging, --branch, main]` to set the branch to be protected.    Both `main` and `master` are protected by default if no branch argument is set.
+* Using `args: [--branch, staging, --branch, main]` to set the branch to be protected.    Both `main` and `master` are protected by default if no branch argument is set.
 
 ```yaml
   - id: no-commit-to-branch
@@ -132,9 +130,9 @@ Check for files with names that would conflict on a case-insensitive filesystem 
 
 Prevent giant files from being committed.
 
-- Specify what is "too large" to be 500Kb
-- Limits checked files to those indicated as staged for addition by git.
-  
+* Specify what is "too large" to be 500Kb
+* Limits checked files to those indicated as staged for addition by git.
+
 ```yaml
   - id: check-added-large-files
     args: ['--maxkb=500']
@@ -159,9 +157,9 @@ Attempts to load all json files to verify syntax.
 ### Petty Format Json
 
 Checks that all your JSON files are pretty.  ***Pretty*** here means that keys are sorted and indented.  Configure this with the following commandline options:
-  
-- `--autofix` - automatically format json files
-- `--indent 2` - Control the indentation (either a number for a number of spaces or a string of whitespace).  Defaults to 2 spaces.
+
+* `--autofix` automatically format json files
+* `--indent 2` Control the indentation (either a number for a number of spaces or a string of whitespace).  Defaults to 2 spaces.
 
 ```yaml
   - id: pretty-format-json
@@ -172,7 +170,7 @@ Checks that all your JSON files are pretty.  ***Pretty*** here means that keys a
 
 Replaces or checks mixed line ending.
 
-- `auto` - Replaces automatically the most frequent line ending.
+* `auto` Replaces automatically the most frequent line ending.
 
 ```yaml
   - id: mixed-line-ending
@@ -183,8 +181,8 @@ Replaces or checks mixed line ending.
 
 Trims trailing whitespace.
 
-- To preserve Markdown hard linebreaks we are using the argument [--markdown-linebreak-ext=md] (for extensions used by our markdownfiles).
-- By default, this hook trims all whitespace from the ends of lines.
+* To preserve Markdown hard linebreaks we are using the argument [--markdown-linebreak-ext=md] (for extensions used by our markdownfiles).
+* By default, this hook trims all whitespace from the ends of lines.
 
 ```yaml
   - id: trailing-whitespace
@@ -219,4 +217,4 @@ Validates all Terraform configuration files with [TFLint](https://github.com/ter
 
 ### Terraform TFSec
 
-[TFSec](https://github.com/aquasecurity/tfsec) static analysis of terraform templates to spot potential security issues. 
+[TFSec](https://github.com/aquasecurity/tfsec) static analysis of terraform templates to spot potential security issues.
