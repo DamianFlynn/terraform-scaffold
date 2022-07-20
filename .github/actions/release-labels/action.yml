@@ -40,7 +40,7 @@ runs:
       uses: peter-evans/find-comment@v2
       id: initial-comment
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ inputs.token }}
         issue-number: ${{ github.event.pull_request.number }}
         comment-author: "github-actions[bot]"
         body-includes: Release Type Label
@@ -62,7 +62,7 @@ runs:
       uses: peter-evans/find-comment@v2
       id: fc
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ inputs.token }}
         issue-number: ${{ github.event.pull_request.number }}
         comment-author: "github-actions[bot]"
         body-includes: Release Type Label
@@ -91,11 +91,10 @@ runs:
 
     - name: Labels are Ok
       if: steps.fc.outputs.comment-id != '' && steps.check_pr_label.outputs.release-type != ''
-      uses: mshick/add-pr-comment@v1
+      uses: peter-evans/create-or-update-comment@v1
       with:
-        repo-token: ${{ inputs.token }}
-        repo-token-user-login: "github-actions[bot]"
-        message: |
+        comment-id: ${{ steps.fc.outputs.comment-id }}
+        body: |
           ## Release Type Label
 
           ${{ steps.check_pr_label.outputs.release-type }} Label applied
