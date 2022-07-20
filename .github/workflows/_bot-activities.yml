@@ -1,5 +1,5 @@
 ---
-name: '🧳 BOT Activities'
+name: "🧳 BOT Activities"
 
 on:
   workflow_call:
@@ -10,7 +10,6 @@ on:
   #  ${{ inputs.build_id }}
 
 jobs:
-
   activities:
     name: BOT Greeting
     runs-on: ubuntu-latest
@@ -19,13 +18,10 @@ jobs:
 
     steps:
       - name: Support information
-        if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
+        if: contains(github.event.comment.body, '/support') # check the comment if it contains the keywords
         run: |
           echo "Debug Support - Context Information"
           echo "$GITHUB_CONTEXT"
-
-
-
 
   activity-deploy:
     name: Deploy Request
@@ -39,7 +35,6 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
       PLAN_STORAGE: ${{ secrets.ACF_REF_AZ_ARTIFACT_STORAGE_CONN }}
     steps:
-
       # Has this workflow already commented on the PR?
       - name: Find Intial Comment
         uses: peter-evans/find-comment@v2
@@ -48,9 +43,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
-          comment-author: 'github-actions[bot]'
+          comment-author: "github-actions[bot]"
           body-includes: Applying Plan
-
 
       - name: Comment on PR Configuration Planning ${{ matrix.directory }}
         if: steps.initial-comment.outputs.comment-id == ''
@@ -61,7 +55,6 @@ jobs:
           body: |
             # 🚀 Applying Plan
 
-
       # Initial Workflow Comment Reference for Updates
       - name: Find Comment
         uses: peter-evans/find-comment@v2
@@ -69,9 +62,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
-          comment-author: 'github-actions[bot]'
+          comment-author: "github-actions[bot]"
           body-includes: Applying Plan
-
 
       - name: Attempt to download an existing Plan SHA
         uses: damianflynn/gha-azblob-download-artifact@master
@@ -80,7 +72,6 @@ jobs:
           connection-string: ${{ secrets.ACF_REF_AZ_ARTIFACT_STORAGE_CONN }}
           name: definition-plan_${{ github.event.repository.name }}_PR${{ github.event.issue.number }}
           path: ${{ github.workspace }}/plans
-
 
       - name: If we have an exisiting Plan get its SHA
         id: store-plan-sha
@@ -91,14 +82,12 @@ jobs:
           echo "Found: $lastPlanSHA"
           echo "::set-output name=lastPlanSHA::$lastPlanSHA"
 
-
       # Grab the Current Terraform Binaries
       - name: Setup Terraform
         if: steps.changes-since-plan.outputs.definition == ''
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.2.3
-
 
       # Clone the repo to the 'src' folder
       - name: Clone repository for analysis
@@ -114,7 +103,6 @@ jobs:
         run: |
           cp plans/terraform.lock.hcl src/.terraform.lock.hcl
 
-
       - name: Update comment with Preping
         if: steps.fc.outputs.comment-id != '' && steps.init.outcome != 'success'
         uses: peter-evans/create-or-update-comment@v1
@@ -126,12 +114,9 @@ jobs:
             - Initializing deployment tool chain.
             - Plan Id: ${{ steps.store-plan-sha.outputs.lastPlanSHA }}
 
-
       ##
       ## STAGE 1 - Terraform Init
       ##
-
-
       # Initialize requirements for Terraform
       # https://www.terraform.io/cli/config/environment-variables#tf_cli_args-and-tf_cli_args_name
       - name: Initialize Terraform
@@ -144,8 +129,6 @@ jobs:
         # terraform init -reconfigure
         # env:
         #   TF_CLI_ARGS: '-var-file="env/dev.tfvars" -backend-config="bucket=${{ secrets.STATE_BUCKET }}" -backend-config="prefix=dev"'
-
-
 
       # Sed is removing all the ANSI Color code messages from the error.
       - name: Reformat Failed Init
@@ -163,7 +146,6 @@ jobs:
           body="${body//$'\n'/'%0A'}"
           body="${body//$'\r'/'%0D'}"
           echo "::set-output name=body::$body"
-
 
       - name: Update comment with Init Failure
         if: steps.fc.outputs.comment-id != '' && steps.init.outcome != 'success' && ( steps.changes-since-plan.outputs.definition == '' )
@@ -188,18 +170,15 @@ jobs:
           reactions: -1
           edit-mode: replace
 
-
       - name: Fail workflow due to init
         if: steps.init.outcome != 'success' && ( steps.changes-since-plan.outputs.definition == '' )
         run: |
           echo "Terraform Init Failed"
           exit 1
 
-
       ##
       ## STAGE 2 - Terraform Plan
       ##
-
 
       # Execute and Terraform Apply
       # and update the PR with the findings
@@ -213,7 +192,6 @@ jobs:
             -input=false \
             -no-color \
             ${{ github.workspace }}/plans/tfplan
-
 
       - name: Update comment with Apply
         if: steps.fc.outputs.comment-id != '' &&  steps.apply.outcome == 'success'
@@ -229,7 +207,6 @@ jobs:
             ```
 
           edit-mode: append
-
 
       - name: Update comment with Apply Failure
         if: steps.fc.outputs.comment-id != '' &&  steps.apply.outcome == 'failure'
@@ -251,9 +228,6 @@ jobs:
           echo "Terraform Apply Failed"
           exit 1
 
-
-
-
   activity-debug:
     name: Debug Context
     runs-on: ubuntu-latest
@@ -265,7 +239,6 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
     steps:
-
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
@@ -299,8 +272,6 @@ jobs:
           echo "The GitHub Actor's username is: $GITHUB_ACTOR"
           echo "GitHub SHA: $GITHUB_SHA"
 
-
-
   activity-tfsec:
     name: Scan Request
     runs-on: ubuntu-latest
@@ -312,7 +283,6 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
     steps:
-
       - name: tfsec
         uses: aquasecurity/tfsec-sarif-action@v0.1.0
         with:
